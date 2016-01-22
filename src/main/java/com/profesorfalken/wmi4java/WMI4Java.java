@@ -205,7 +205,7 @@ public class WMI4Java {
      * @return map with the key and the value of all the properties of the object
      */
     public Map<String, String> getWMIObject(String wmiClass) {
-        Map<String, String> foundWMIClassProperties = new HashMap<>();
+        Map<String, String> foundWMIClassProperties = new HashMap<String, String>();
         try {
             String rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
 
