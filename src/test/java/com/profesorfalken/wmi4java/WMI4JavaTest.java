@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.profesorfalken.wmi4java;
+package com.profesorfalken.wmi4java;
 
 import com.profesorfalken.wmi4java.WMI4Java;
 import java.util.List;
