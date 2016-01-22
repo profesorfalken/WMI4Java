@@ -48,37 +48,38 @@ public class WMI4JavaTest {
     public void testWMIClassList() throws Exception {
         System.out.println("start testWMIClassList");
 
-        WMI4Java wmi4java = WMI4Java.get();
+        if (OSDetector.isWindows()) {
+            WMI4Java wmi4java = WMI4Java.get();
 
-        //Default class root/CIMV2
-        List<String> wmiClassesList = wmi4java.listClasses();
-        assertTrue("Returned WMI Classes list is empty! ", !wmiClassesList.isEmpty());
-        assertTrue("WMI Classes list content not valid! ", wmiClassesList.contains("Win32_BaseBoard"));
-        assertTrue("WMI Classes list content not valid! ", !wmiClassesList.contains("AspNetStart"));
-        StringBuilder powerShellResultString = new StringBuilder();
-        for (final String wmiClass : wmiClassesList) {
-            powerShellResultString.append(wmiClass).append("\r\n");
+            //Default class root/CIMV2
+            List<String> wmiClassesList = wmi4java.listClasses();
+            assertTrue("Returned WMI Classes list is empty! ", !wmiClassesList.isEmpty());
+            assertTrue("WMI Classes list content not valid! ", wmiClassesList.contains("Win32_BaseBoard"));
+            assertTrue("WMI Classes list content not valid! ", !wmiClassesList.contains("AspNetStart"));
+            StringBuilder powerShellResultString = new StringBuilder();
+            for (final String wmiClass : wmiClassesList) {
+                powerShellResultString.append(wmiClass).append("\r\n");
+            }
+            List<String> wmiClassesListRootWMI = wmi4java.namespace("root/WMI").listClasses();
+            assertTrue("Returned WMI Classes list is empty! ", !wmiClassesListRootWMI.isEmpty());
+            assertTrue("WMI Classes list content not valid! ", !wmiClassesListRootWMI.contains("Win32_BaseBoard"));
+            assertTrue("WMI Classes list content not valid! ", wmiClassesListRootWMI.contains("AspNetStart"));
+
+            //Now test with VB
+            List<String> wmiClassesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listClasses();
+            assertTrue("Returned WMI Classes list is empty! ", !wmiClassesVBList.isEmpty());
+            assertTrue("WMI Classes list content not valid! ", wmiClassesVBList.contains("Win32_BaseBoard"));
+            assertTrue("WMI Classes list content not valid! ", !wmiClassesVBList.contains("AspNetStart"));
+
+            List<String> wmiClassesVBListRootWMI = wmi4java.namespace("root/WMI").listClasses();
+            assertTrue("Returned WMI Classes list is empty! ", !wmiClassesVBListRootWMI.isEmpty());
+            assertTrue("WMI Classes list content not valid! ", !wmiClassesVBListRootWMI.contains("Win32_BaseBoard"));
+            assertTrue("WMI Classes list content not valid! ", wmiClassesVBListRootWMI.contains("AspNetStart"));
+
+            //Calculate differences
+            assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassesList, wmiClassesVBList));
+            assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassesListRootWMI, wmiClassesVBListRootWMI));
         }
-        List<String> wmiClassesListRootWMI = wmi4java.namespace("root/WMI").listClasses();
-        assertTrue("Returned WMI Classes list is empty! ", !wmiClassesListRootWMI.isEmpty());
-        assertTrue("WMI Classes list content not valid! ", !wmiClassesListRootWMI.contains("Win32_BaseBoard"));
-        assertTrue("WMI Classes list content not valid! ", wmiClassesListRootWMI.contains("AspNetStart"));
-
-        //Now test with VB
-        List<String> wmiClassesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listClasses();
-        assertTrue("Returned WMI Classes list is empty! ", !wmiClassesVBList.isEmpty());
-        assertTrue("WMI Classes list content not valid! ", wmiClassesVBList.contains("Win32_BaseBoard"));
-        assertTrue("WMI Classes list content not valid! ", !wmiClassesVBList.contains("AspNetStart"));
-        
-        List<String> wmiClassesVBListRootWMI = wmi4java.namespace("root/WMI").listClasses();
-        assertTrue("Returned WMI Classes list is empty! ", !wmiClassesVBListRootWMI.isEmpty());
-        assertTrue("WMI Classes list content not valid! ", !wmiClassesVBListRootWMI.contains("Win32_BaseBoard"));
-        assertTrue("WMI Classes list content not valid! ", wmiClassesVBListRootWMI.contains("AspNetStart"));
-        
-        //Calculate differences
-        assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassesList, wmiClassesVBList));
-        assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassesListRootWMI, wmiClassesVBListRootWMI));
-
         System.out.println("end testWMIClassList");
     }
 
@@ -104,37 +105,38 @@ public class WMI4JavaTest {
     public void testWMIClassPropertiesList() throws Exception {
         System.out.println("test testWMIClassPropertiesList");
 
-        WMI4Java wmi4java = WMI4Java.get();
+        if (OSDetector.isWindows()) {
+            WMI4Java wmi4java = WMI4Java.get();
 
-        List<String> wmiClassPropertiesList = wmi4java.listProperties("Win32_BaseBoard");
+            List<String> wmiClassPropertiesList = wmi4java.listProperties("Win32_BaseBoard");
 
-        assertTrue("Returned WMI class properties list is empty! ",
-                !wmiClassPropertiesList.isEmpty());
-        assertTrue("WMI class properties list content not valid! ",
-                wmiClassPropertiesList.contains("Version"));
-        assertTrue("WMI class properties list content not valid! Not correctly filtered ",
-                !wmiClassPropertiesList.contains("__CLASS"));
+            assertTrue("Returned WMI class properties list is empty! ",
+                    !wmiClassPropertiesList.isEmpty());
+            assertTrue("WMI class properties list content not valid! ",
+                    wmiClassPropertiesList.contains("Version"));
+            assertTrue("WMI class properties list content not valid! Not correctly filtered ",
+                    !wmiClassPropertiesList.contains("__CLASS"));
 
-        List<String> wmiClassPropertiesRootNamespaceList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
-        assertTrue("Returned WMI class properties list should be empty! ",
-                wmiClassPropertiesRootNamespaceList.isEmpty());
+            List<String> wmiClassPropertiesRootNamespaceList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+            assertTrue("Returned WMI class properties list should be empty! ",
+                    wmiClassPropertiesRootNamespaceList.isEmpty());
 
-        //Now test with VB
-        List<String> wmiClassPropertiesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listProperties("Win32_BaseBoard");
-        assertTrue("Returned WMI class properties list is empty! ",
-                !wmiClassPropertiesVBList.isEmpty());
-        assertTrue("WMI class properties list content not valid! ",
-                wmiClassPropertiesVBList.contains("Version"));
-        assertTrue("WMI class properties list content not valid! Not correctly filtered ",
-                !wmiClassPropertiesVBList.contains("__CLASS"));
+            //Now test with VB
+            List<String> wmiClassPropertiesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listProperties("Win32_BaseBoard");
+            assertTrue("Returned WMI class properties list is empty! ",
+                    !wmiClassPropertiesVBList.isEmpty());
+            assertTrue("WMI class properties list content not valid! ",
+                    wmiClassPropertiesVBList.contains("Version"));
+            assertTrue("WMI class properties list content not valid! Not correctly filtered ",
+                    !wmiClassPropertiesVBList.contains("__CLASS"));
 
-        List<String> wmiClassPropertiesRootNamespaceVBList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
-        assertTrue("Returned WMI class properties list should be empty! ",
-                wmiClassPropertiesRootNamespaceVBList.isEmpty());
+            List<String> wmiClassPropertiesRootNamespaceVBList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+            assertTrue("Returned WMI class properties list should be empty! ",
+                    wmiClassPropertiesRootNamespaceVBList.isEmpty());
 
-        //Calculate differences
-        assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassPropertiesList, wmiClassPropertiesVBList));
-
+            //Calculate differences
+            assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassPropertiesList, wmiClassPropertiesVBList));
+        }
         System.out.println("end testWMIClassPropertiesList");
     }
 
@@ -145,31 +147,32 @@ public class WMI4JavaTest {
     public void testWMIObject() throws Exception {
         System.out.println("testWMIObject");
 
-        WMI4Java wmi4java = WMI4Java.get();
+        if (OSDetector.isWindows()) {
+            WMI4Java wmi4java = WMI4Java.get();
 
-        Map<String, String> wmiObjectProperties = wmi4java.getWMIObject("Win32_BaseBoard");
+            Map<String, String> wmiObjectProperties = wmi4java.getWMIObject("Win32_BaseBoard");
 
-        assertTrue("Returned WMI object list is empty! ",
-                !wmiObjectProperties.isEmpty());
-        assertNotNull("Name property should not be null! ",
-                wmiObjectProperties.get("Name"));
-        assertNotNull("Manufacturer property should not be null ",
-                wmiObjectProperties.get("Manufacturer"));
+            assertTrue("Returned WMI object list is empty! ",
+                    !wmiObjectProperties.isEmpty());
+            assertNotNull("Name property should not be null! ",
+                    wmiObjectProperties.get("Name"));
+            assertNotNull("Manufacturer property should not be null ",
+                    wmiObjectProperties.get("Manufacturer"));
 
-        Map<String, String> wmiObjectPropertiesVB = wmi4java.VBSEngine().getWMIObject("Win32_BaseBoard");
+            Map<String, String> wmiObjectPropertiesVB = wmi4java.VBSEngine().getWMIObject("Win32_BaseBoard");
 
-        assertTrue("Returned WMI object list is empty! ",
-                !wmiObjectPropertiesVB.isEmpty());
-        assertNotNull("Name property should not be null! ",
-                wmiObjectPropertiesVB.get("Name"));
-        assertNotNull("Manufacturer property should not be null ",
-                wmiObjectPropertiesVB.get("Manufacturer"));
+            assertTrue("Returned WMI object list is empty! ",
+                    !wmiObjectPropertiesVB.isEmpty());
+            assertNotNull("Name property should not be null! ",
+                    wmiObjectPropertiesVB.get("Name"));
+            assertNotNull("Manufacturer property should not be null ",
+                    wmiObjectPropertiesVB.get("Manufacturer"));
 
-        //Differences
-        assertTrue(wmiObjectProperties.get("Description").equals(wmiObjectPropertiesVB.get("Description")));
-        assertTrue(Math.abs(wmiObjectProperties.size() - wmiObjectPropertiesVB.size())
-                < (int) (wmiObjectProperties.size() * 0.1));
-
+            //Differences
+            assertTrue(wmiObjectProperties.get("Description").equals(wmiObjectPropertiesVB.get("Description")));
+            assertTrue(Math.abs(wmiObjectProperties.size() - wmiObjectPropertiesVB.size())
+                    < (int) (wmiObjectProperties.size() * 0.1));
+        }
         System.out.println("end testWMIObject");
     }
 }
