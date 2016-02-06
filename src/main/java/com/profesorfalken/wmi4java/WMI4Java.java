@@ -225,4 +225,31 @@ public class WMI4Java {
         }
         return foundWMIClassProperties;
     }
+    
+    /**
+     * Query all the raw object data for an specific class
+     *  
+     * @param wmiClass Enum that contains the most used classes (root/cimv2)
+     * @return string with all the properties of the object
+     */
+    public String getRawWMIObjectOutput(WMIClass wmiClass) {
+        return getRawWMIObjectOutput(wmiClass.getName());
+    }
+
+    /**
+     * Query all the raw object data for an specific class
+     *  
+     * @param wmiClass string with the name of the class to query
+     * @return string with all the properties of the object
+     */
+    public String getRawWMIObjectOutput(String wmiClass) {        
+        String rawData;
+        try {
+            rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
+        } catch (WMIException ex) {
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            rawData = "";
+        }
+        return rawData;
+    }
 }

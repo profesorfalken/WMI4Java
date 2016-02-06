@@ -142,7 +142,7 @@ class WMIVBScript implements WMIStub {
 
     @Override
     public String listObject(String wmiClass, String namespace, String computerName) throws WMIException {
-        List<String> wmiProperties = WMI4Java.get().computerName(computerName).namespace(namespace).listProperties(wmiClass);
+         List<String> wmiProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);
         try {
             StringBuilder scriptCode = new StringBuilder(200);
 
