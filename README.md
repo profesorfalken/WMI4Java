@@ -6,18 +6,18 @@ Java API to perform WMI queries
 
 ## Installation ##
 
-To install WMI4Java you can add the dependecy to your software project management tool: http://mvnrepository.com/artifact/com.profesorfalken/WMI4Java/1.0
+To install WMI4Java you can add the dependecy to your software project management tool: http://mvnrepository.com/artifact/com.profesorfalken/WMI4Java/1.1
 
 For example, for Maven you have just to add to your pom.xml: 
 
       <dependency>
 	        <groupId>com.profesorfalken</groupId>
 	        <artifactId>WMI4Java</artifactId>
-	        <version>1.0</version>
+	        <version>1.1</version>
         </dependency>
 
 Instead, you can direct download the JAR file and add it to your classpath. 
-https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.0/WMI4Java-1.0.jar
+https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.1/WMI4Java-1.1.jar
 
 ## Basic Usage ##
 
