@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * WMI Stub implementation based in VBS
@@ -29,13 +31,17 @@ import java.util.List;
  * @author Javier Garcia Alonso
  */
 class WMIVBScript implements WMIStub {
+    
+    private static final String ROOT_CIMV2 = "root/cimv2";
+    private static final String IMPERSONATION_VARIABLE = "Set objWMIService=GetObject(\"winmgmts:{impersonationLevel=impersonate}!\\\\";
 
     private static final String CRLF = "\r\n";
 
-    private String executeScript(String scriptCode) throws WMIException {
+    private static String executeScript(String scriptCode) throws WMIException {
         String scriptResponse = "";
         File tmpFile = null;
         FileWriter writer = null;
+        BufferedReader errorOutput = null;
 
         try {
             tmpFile = File.createTempFile("wmi4java" + new Date().getTime(), ".vbs");
@@ -56,7 +62,7 @@ class WMIVBScript implements WMIStub {
             }
 
             if (scriptResponse.isEmpty()) {
-                BufferedReader errorOutput
+                errorOutput
                         = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String errorResponse = "";
                 while ((line = errorOutput.readLine()) != null) {
@@ -80,8 +86,11 @@ class WMIVBScript implements WMIStub {
                 if (tmpFile != null) {
                     tmpFile.delete();
                 }
+                if (errorOutput != null) {
+                    errorOutput.close();
+                }
             } catch (IOException ioe) {
-                throw new WMIException(ioe.getMessage(), ioe);
+                Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Exception closing in finally", ioe);
             }
         }
         return scriptResponse.trim();
@@ -93,12 +102,12 @@ class WMIVBScript implements WMIStub {
         try {
             StringBuilder scriptCode = new StringBuilder(200);
 
-            String namespaceCommand = "root/cimv2";
+            String namespaceCommand = ROOT_CIMV2;
             if (!"*".equals(namespace)) {
                 namespaceCommand = namespace;
             }
 
-            scriptCode.append("Set objWMIService=GetObject(\"winmgmts:{impersonationLevel=impersonate}!\\\\")
+            scriptCode.append(IMPERSONATION_VARIABLE)
                     .append(computerName).append("/").append(namespaceCommand).append("\")").append(CRLF);
 
             scriptCode.append("Set colClasses = objWMIService.SubclassesOf()").append(CRLF);
@@ -120,12 +129,12 @@ class WMIVBScript implements WMIStub {
         try {
             StringBuilder scriptCode = new StringBuilder(200);
 
-            String namespaceCommand = "root/cimv2";
+            String namespaceCommand = ROOT_CIMV2;
             if (!"*".equals(namespace)) {
                 namespaceCommand = namespace;
             }
 
-            scriptCode.append("Set objWMIService=GetObject(\"winmgmts:{impersonationLevel=impersonate}!\\\\")
+            scriptCode.append(IMPERSONATION_VARIABLE)
                     .append(computerName).append("/").append(namespaceCommand).append(":")
                     .append(wmiClass).append("\")").append(CRLF);
 
@@ -146,12 +155,12 @@ class WMIVBScript implements WMIStub {
         try {
             StringBuilder scriptCode = new StringBuilder(200);
 
-            String namespaceCommand = "root/cimv2";
+            String namespaceCommand = ROOT_CIMV2;
             if (!"*".equals(namespace)) {
                 namespaceCommand = namespace;
             }
 
-            scriptCode.append("Set objWMIService=GetObject(\"winmgmts:{impersonationLevel=impersonate}!\\\\")
+            scriptCode.append(IMPERSONATION_VARIABLE)
                     .append(computerName).append("/").append(namespaceCommand).append("\")").append(CRLF);
 
             scriptCode.append("Set colClasses = objWMIService.SubclassesOf()").append(CRLF);
