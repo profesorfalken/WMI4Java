@@ -50,6 +50,8 @@ import java.util.logging.Logger;
 public class WMI4Java {
     private static final String NEWLINE_REGEX = "\\r?\\n";
     private static final String SPACE_REGEX = "\\s+";
+    
+    private static final String GENERIC_ERROR_MSG = "Error calling WMI4Java";
 
     private String namespace = "*";
     private String computerName = ".";
@@ -151,7 +153,7 @@ public class WMI4Java {
             wmiClasses.addAll(hs);
             
         } catch (Exception ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
             wmiClasses = Collections.emptyList();
         }
 
@@ -182,7 +184,7 @@ public class WMI4Java {
             foundPropertiesList.removeAll(notAllowed);
 
         } catch (Exception ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
             foundPropertiesList = Collections.emptyList();
         }
         return foundPropertiesList;
@@ -220,7 +222,7 @@ public class WMI4Java {
                 }
             }
         } catch (WMIException ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
             foundWMIClassProperties = Collections.emptyMap();
         }
         return foundWMIClassProperties;
@@ -247,7 +249,7 @@ public class WMI4Java {
         try {
             rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
         } catch (WMIException ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
             rawData = "";
         }
         return rawData;

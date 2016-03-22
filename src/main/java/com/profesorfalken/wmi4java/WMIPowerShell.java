@@ -29,8 +29,10 @@ import java.util.List;
  * @author Javier Garcia Alonso
  */
 class WMIPowerShell implements WMIStub {
+    private static final String NAMESPACE_PARAM = "-Namespace ";
+    private static final String GETWMIOBJECT_COMMAND = "Get-WMIObject ";    
 
-    private String executeCommand(String command) throws WMIException {
+    private static String executeCommand(String command) throws WMIException {
         String commandResponse = null;
         PowerShell powerShell = null;
         try {
@@ -60,19 +62,19 @@ class WMIPowerShell implements WMIStub {
     public String listClasses(String namespace, String computerName) throws WMIException {
         String namespaceString = "";
         if (!"*".equals(namespace)) {
-            namespaceString += "-Namespace " + namespace;
+            namespaceString += NAMESPACE_PARAM + namespace;
         }
 
-        return executeCommand("Get-WMIObject "
+        return executeCommand(GETWMIOBJECT_COMMAND
                 + namespaceString + " -List | Sort Name");
     }
 
     @Override
     public String listProperties(String wmiClass, String namespace, String computerName) throws WMIException {
-        String command = "Get-WMIObject " + wmiClass + " ";
+        String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
         if (!"*".equals(namespace)) {
-            command += "-Namespace " + namespace;
+            command += NAMESPACE_PARAM + namespace;
         }
 
         command += " | ";
@@ -86,10 +88,10 @@ class WMIPowerShell implements WMIStub {
 
     @Override
     public String listObject(String wmiClass, String namespace, String computerName) throws WMIException {
-        String command = "Get-WMIObject " + wmiClass + " ";
+        String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
         if (!"*".equals(namespace)) {
-            command += "-Namespace " + namespace;
+            command += NAMESPACE_PARAM + namespace;
         }
 
         command += " | ";

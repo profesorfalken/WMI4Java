@@ -22,9 +22,6 @@ package com.profesorfalken.wmi4java;
  */
 public class WMIException extends Exception{
 
-    public WMIException() {
-    }
-
     public WMIException(String message) {
         super(message);
     }
