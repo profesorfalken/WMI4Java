@@ -252,4 +252,19 @@ public class WMI4Java {
         }
         return rawData;
     }
+
+    public String queryWMIObject(WMIClass wmiClass, List<String> wmiProperties, List<String> conditions){
+        return queryWMIObject(wmiClass.getName(), wmiProperties, conditions);
+    }
+
+    public String queryWMIObject(String wmiClass, List<String> wmiProperties, List<String> conditions){
+        String rawData;
+        try {
+            rawData = getWMIStub().queryObject(wmiClass, wmiProperties, conditions,  this.namespace, this.computerName);
+        } catch (WMIException ex) {
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Error calling WMI4Java", ex);
+            rawData = "";
+        }
+        return rawData;
+    }
 }

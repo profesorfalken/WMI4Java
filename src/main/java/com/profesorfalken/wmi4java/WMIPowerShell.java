@@ -15,9 +15,13 @@
  */
 package com.profesorfalken.wmi4java;
 
+import com.google.common.base.Joiner;
 import com.profesorfalken.jpowershell.PowerShell;
 import com.profesorfalken.jpowershell.PowerShellNotAvailableException;
 import com.profesorfalken.jpowershell.PowerShellResponse;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * WMI Stub implementation based in PowerShell (jPowerShell)
@@ -91,6 +95,32 @@ class WMIPowerShell implements WMIStub {
         command += " | ";
 
         command += "Select-Object * -excludeproperty \"_*\" | ";
+
+        command += "Format-List *";
+
+        return executeCommand(command);
+    }
+
+    @Override
+    public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
+        String command = "Get-WMIObject " + wmiClass + " ";
+
+        if (!"*".equals(namespace)) {
+            command += "-Namespace " + namespace;
+        }
+        if(wmiProperties == null ||wmiProperties.isEmpty()){
+            wmiProperties = Collections.singletonList("*");
+        }
+
+        command += " | ";
+
+        command += "Select-Object " + Joiner.on(", ").join(wmiProperties)+" -excludeproperty \"_*\" | ";
+
+        if(conditions!=null && !conditions.isEmpty()){
+            for(String condition : conditions) {
+                command += "Where-Object -FilterScript {" + condition + "} | ";
+            }
+        }
 
         command += "Format-List *";
 

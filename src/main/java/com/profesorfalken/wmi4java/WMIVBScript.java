@@ -15,6 +15,8 @@
  */
 package com.profesorfalken.wmi4java;
 
+import com.google.common.base.Joiner;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,7 +27,7 @@ import java.util.List;
 
 /**
  * WMI Stub implementation based in VBS
- * 
+ *
  * @author Javier Garcia Alonso
  */
 class WMIVBScript implements WMIStub {
@@ -142,7 +144,13 @@ class WMIVBScript implements WMIStub {
 
     @Override
     public String listObject(String wmiClass, String namespace, String computerName) throws WMIException {
-         List<String> wmiProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);
+        return queryObject(wmiClass, null, null, namespace, computerName);
+    }
+
+    public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
+        if (wmiProperties == null || wmiProperties.isEmpty()) {
+            wmiProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);
+        }
         try {
             StringBuilder scriptCode = new StringBuilder(200);
 
@@ -156,8 +164,12 @@ class WMIVBScript implements WMIStub {
 
             scriptCode.append("Set colClasses = objWMIService.SubclassesOf()").append(CRLF);
 
-            scriptCode.append("Set wmiQueryData = objWMIService.ExecQuery(\"Select * from ")
-                    .append(wmiClass).append("\")").append(CRLF);
+            scriptCode.append("Set wmiQueryData = objWMIService.ExecQuery(\"Select ").append("*").append(" from ")
+                    .append(wmiClass);
+            if (conditions != null && !conditions.isEmpty()) {
+                scriptCode.append(" where ").append(Joiner.on(" AND ").join(conditions));
+            }
+            scriptCode.append("\")").append(CRLF);
             scriptCode.append("For Each element In wmiQueryData").append(CRLF);
             for (final String wmiProperty : wmiProperties) {
                 scriptCode.append("Wscript.Echo \"").append(wmiProperty)

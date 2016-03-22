@@ -5,14 +5,17 @@
  */
 package com.profesorfalken.wmi4java;
 
-import com.profesorfalken.wmi4java.WMI4Java;
-import java.util.List;
-import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -174,5 +177,17 @@ public class WMI4JavaTest {
                     < (int) (wmiObjectProperties.size() * 0.1));
         }
         System.out.println("end testWMIObject");
+    }
+
+    @Ignore
+    @Test
+    public void testQueryVBS(){
+        System.out.println(WMI4Java.get().VBSEngine().queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("CommandLine", "ProcessId"), Arrays.asList("Name = 'java.exe'")));
+    }
+
+    @Ignore
+    @Test
+    public void testQueryPS(){
+        System.out.println(WMI4Java.get().PowerShellEngine().queryWMIObject(WMIClass.WIN32_PROCESS,  Arrays.asList("Name" ,"CommandLine", "ProcessId"), Arrays.asList("$_.Name -eq \"java.exe\"")));
     }
 }

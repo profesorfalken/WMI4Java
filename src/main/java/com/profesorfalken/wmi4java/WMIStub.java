@@ -15,6 +15,8 @@
  */
 package com.profesorfalken.wmi4java;
 
+import java.util.List;
+
 /**
  * Interface for the stub that performs the operations to query WMI in order to
  * retrieve the classes, properties and object details
@@ -43,6 +45,19 @@ interface WMIStub {
      * @throws WMIException 
      */
     String listObject(String wmiClass, String namespace, String computerName) throws WMIException;
+
+    /**
+     * List elements of the selected WMI class for the required namespace/computername
+     *
+     * @param wmiClass the name of the queried wmi class
+     * @param namespace the namespace
+     * @param computerName the computer name
+     * @param wmiProperties fields to return
+     * @param conditions conditions to meet
+     * @return String with all the raw information returned after the query
+     * @throws WMIException
+     */
+    String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException;
 
     /**
      * List all properties of the selected WMI class for the required namespace/computername
