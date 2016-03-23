@@ -184,31 +184,35 @@ public class WMI4JavaTest {
      */
     @Test
     public void testQueryWMIObject() {
-        String queryResultPS =WMI4Java.get().PowerShellEngine()
-                .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"), 
-                        Arrays.asList("$_.Name -eq \"java.exe\""));
-        assertNotNull("Query result should not be null!", queryResultPS);
-        assertTrue("Query result should not be empty! ",
-                !queryResultPS.isEmpty());
-        
-        String queryResultVBS = WMI4Java.get().VBSEngine()
-                .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"), 
-                        Arrays.asList("Name = 'java.exe'"));
-        assertNotNull("Query result should not be null!", queryResultVBS);
-        assertTrue("Query result should not be empty! ",
-                !queryResultVBS.isEmpty());
-        
-        System.out.println(queryResultPS);
-        System.out.println(queryResultVBS);
-        
-        String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
-        String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
-        
-        //Compare first and last line ignoring spaces
-        assertTrue("PS and VBS query result are different!", CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[0])
-                .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[0])));
-        assertTrue("PS and VBS query result are different!", 
-                CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[queryResultPSLines.length-1])
-                .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[queryResultVBSLines.length-1])));
+        System.out.println("testQueryWMIObject");
+
+        if (OSDetector.isWindows()) {
+            String queryResultPS = WMI4Java.get().PowerShellEngine()
+                    .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"),
+                            Arrays.asList("$_.Name -eq \"java.exe\""));
+            assertNotNull("Query result should not be null!", queryResultPS);
+            assertTrue("Query result should not be empty! ",
+                    !queryResultPS.isEmpty());
+
+            String queryResultVBS = WMI4Java.get().VBSEngine()
+                    .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"),
+                            Arrays.asList("Name = 'java.exe'"));
+            assertNotNull("Query result should not be null!", queryResultVBS);
+            assertTrue("Query result should not be empty! ",
+                    !queryResultVBS.isEmpty());
+
+            System.out.println(queryResultPS);
+            System.out.println(queryResultVBS);
+
+            String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
+            String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
+
+            //Compare first and last line ignoring spaces
+            assertTrue("PS and VBS query result are different!", CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[0])
+                    .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[0])));
+            assertTrue("PS and VBS query result are different!",
+                    CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[queryResultPSLines.length - 1])
+                    .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[queryResultVBSLines.length - 1])));
+        }
     }
 }
