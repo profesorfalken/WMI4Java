@@ -156,6 +156,7 @@ class WMIVBScript implements WMIStub {
         return queryObject(wmiClass, null, null, namespace, computerName);
     }
 
+    @Override
     public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
         if (wmiProperties == null || wmiProperties.isEmpty()) {
             wmiProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);

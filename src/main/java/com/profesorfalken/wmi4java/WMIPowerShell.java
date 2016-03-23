@@ -44,7 +44,7 @@ class WMIPowerShell implements WMIStub {
                         + psResponse.getCommandOutput());
             }
 
-            commandResponse = psResponse.getCommandOutput();
+            commandResponse = psResponse.getCommandOutput().trim();
 
             powerShell.close();
         } catch (PowerShellNotAvailableException ex) {
@@ -105,10 +105,10 @@ class WMIPowerShell implements WMIStub {
 
     @Override
     public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
-        String command = "Get-WMIObject " + wmiClass + " ";
+        String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
         if (!"*".equals(namespace)) {
-            command += "-Namespace " + namespace;
+            command += NAMESPACE_PARAM + namespace;
         }
         if(wmiProperties == null ||wmiProperties.isEmpty()){
             wmiProperties = Collections.singletonList("*");

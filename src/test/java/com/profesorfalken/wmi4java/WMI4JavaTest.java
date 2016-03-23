@@ -5,11 +5,11 @@
  */
 package com.profesorfalken.wmi4java;
 
+import com.google.common.base.CharMatcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class WMI4JavaTest {
     }
 
     /**
-     * Test of main method, of class WMI4Java.
+     * Test of listClasses method, of class WMI4Java.
      */
     @Test
     public void testWMIClassList() throws Exception {
@@ -102,7 +102,7 @@ public class WMI4JavaTest {
     }
 
     /**
-     * Test of main method, of class WMI4Java.
+     * Test of listProperties method, of class WMI4Java.
      */
     @Test
     public void testWMIClassPropertiesList() throws Exception {
@@ -144,7 +144,7 @@ public class WMI4JavaTest {
     }
 
     /**
-     * Test of main method, of class WMI4Java.
+     * Test of getWMIObject method, of class WMI4Java.
      */
     @Test
     public void testWMIObject() throws Exception {
@@ -179,15 +179,36 @@ public class WMI4JavaTest {
         System.out.println("end testWMIObject");
     }
 
-    @Ignore
+    /**
+     * Test of queryWMIObject method, of class WMI4Java.
+     */
     @Test
-    public void testQueryVBS(){
-        System.out.println(WMI4Java.get().VBSEngine().queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("CommandLine", "ProcessId"), Arrays.asList("Name = 'java.exe'")));
-    }
-
-    @Ignore
-    @Test
-    public void testQueryPS(){
-        System.out.println(WMI4Java.get().PowerShellEngine().queryWMIObject(WMIClass.WIN32_PROCESS,  Arrays.asList("Name" ,"CommandLine", "ProcessId"), Arrays.asList("$_.Name -eq \"java.exe\"")));
+    public void testQueryWMIObject() {
+        String queryResultPS =WMI4Java.get().PowerShellEngine()
+                .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"), 
+                        Arrays.asList("$_.Name -eq \"java.exe\""));
+        assertNotNull("Query result should not be null!", queryResultPS);
+        assertTrue("Query result should not be empty! ",
+                !queryResultPS.isEmpty());
+        
+        String queryResultVBS = WMI4Java.get().VBSEngine()
+                .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"), 
+                        Arrays.asList("Name = 'java.exe'"));
+        assertNotNull("Query result should not be null!", queryResultVBS);
+        assertTrue("Query result should not be empty! ",
+                !queryResultVBS.isEmpty());
+        
+        System.out.println(queryResultPS);
+        System.out.println(queryResultVBS);
+        
+        String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
+        String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
+        
+        //Compare first and last line ignoring spaces
+        assertTrue("PS and VBS query result are different!", CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[0])
+                .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[0])));
+        assertTrue("PS and VBS query result are different!", 
+                CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[queryResultPSLines.length-1])
+                .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[queryResultVBSLines.length-1])));
     }
 }

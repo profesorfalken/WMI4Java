@@ -47,13 +47,13 @@ interface WMIStub {
     String listObject(String wmiClass, String namespace, String computerName) throws WMIException;
 
     /**
-     * List elements of the selected WMI class for the required namespace/computername
+     * Queries a WMI class getting specific properties and applying filters
      *
      * @param wmiClass the name of the queried wmi class
-     * @param namespace the namespace
-     * @param computerName the computer name
-     * @param wmiProperties fields to return
+     * @param wmiProperties properties to return
      * @param conditions conditions to meet
+     * @param namespace the namespace
+     * @param computerName the computer name     
      * @return String with all the raw information returned after the query
      * @throws WMIException
      */
