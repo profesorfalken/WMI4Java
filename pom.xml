@@ -69,8 +69,8 @@
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
-                                </goals>                                      
-                            </execution>                            
+                                </goals>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
@@ -106,7 +106,7 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>    
+    </profiles>
     
     <dependencies>
         <dependency>
@@ -119,6 +119,11 @@
             <groupId>com.profesorfalken</groupId>
             <artifactId>jPowerShell</artifactId>
             <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
         </dependency>
     </dependencies>
     <properties>
