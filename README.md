@@ -1,5 +1,6 @@
 ![](https://img.shields.io/maven-central/v/com.profesorfalken/WMI4Java.svg)
 ![](https://img.shields.io/github/license/profesorfalken/WMI4Java.svg)
+![](https://travis-ci.org/profesorfalken/WMI4Java.svg)
 
 # WMI4Java
 Java API to perform WMI queries
