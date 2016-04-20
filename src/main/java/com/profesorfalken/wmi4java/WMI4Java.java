@@ -255,10 +255,26 @@ public class WMI4Java {
         return rawData;
     }
 
+    /**
+     * Query specific properties from a WMI class using provided conditions
+     *  
+     * @param wmiClass string with the name of the class to query
+     * @param wmiProperties list of properties to retrieve
+     * @param conditions conditions to apply to the query
+     * @return map with the key and the value of all the properties of the object
+     */
     public String queryWMIObject(WMIClass wmiClass, List<String> wmiProperties, List<String> conditions){
         return queryWMIObject(wmiClass.getName(), wmiProperties, conditions);
     }
 
+    /**
+     * Query specific properties from a WMI class using provided conditions
+     *  
+     * @param wmiClass  enum that contains the most used classes (root/cimv2)
+     * @param wmiProperties list of properties to retrieve
+     * @param conditions conditions to apply to the query
+     * @return map with the key and the value of all the properties of the object
+     */
     public String queryWMIObject(String wmiClass, List<String> wmiProperties, List<String> conditions){
         String rawData;
         try {
