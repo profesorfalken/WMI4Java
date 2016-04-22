@@ -41,6 +41,28 @@ https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.4/WMI4Java-1.4.jar
     Map<String, String> wmiObjectProperties = WMI4Java.get().getWMIObject("Win32_BIOS");
 ```
 
+## More Advanced Usage ##
+
+#### Get raw output in String format ####
+
+```java
+    //Example win32_BIOS
+    Map<String, String> wmiObjectProperties = WMI4Java.get().getRawWMIObjectOutput("Win32_BIOS");
+```
+
+#### Filter results by property value ####
+
+```java
+    //Example get processes named java.exe
+    Map<String, String> wmiObjectProperties = WMI4Java.get().filter(Arrays.asList("$_.Name -eq \"java.exe\"")).getWMIObject("Win32_Process");
+```
+
+#### Get only specific properties ####
+```java
+    //Example get processes named java.exe
+    Map<String, String> wmiObjectProperties = WMI4Java.get().properties(Arrays.asList("Name", "CommandLine", "ProcessId")).getWMIObject("Win32_Process");
+```
+
 ## How it works ##
 
 WMI4Java uses two different mechanism in order to retrieve WMI information.
