@@ -196,7 +196,7 @@ public class WMI4JavaTest {
                     !queryResultPS.isEmpty());
 
             String queryResultVBS = WMI4Java.get().VBSEngine()
-                    .filters(Arrays.asList("$_.Name -eq \"java.exe\""))
+                    .filters(Arrays.asList("Name = 'java.exe'"))
                     .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
                     .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
             assertNotNull("Query result should not be null!", queryResultVBS);
