@@ -188,15 +188,17 @@ public class WMI4JavaTest {
 
         if (OSDetector.isWindows()) {
             String queryResultPS = WMI4Java.get().PowerShellEngine()
-                    .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"),
-                            Arrays.asList("$_.Name -eq \"java.exe\""));
+                    .filters(Arrays.asList("$_.Name -eq \"java.exe\""))
+                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
             assertNotNull("Query result should not be null!", queryResultPS);
             assertTrue("Query result should not be empty! ",
                     !queryResultPS.isEmpty());
 
             String queryResultVBS = WMI4Java.get().VBSEngine()
-                    .queryWMIObject(WMIClass.WIN32_PROCESS, Arrays.asList("Name", "CommandLine", "ProcessId"),
-                            Arrays.asList("Name = 'java.exe'"));
+                    .filters(Arrays.asList("$_.Name -eq \"java.exe\""))
+                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
             assertNotNull("Query result should not be null!", queryResultVBS);
             assertTrue("Query result should not be empty! ",
                     !queryResultVBS.isEmpty());
