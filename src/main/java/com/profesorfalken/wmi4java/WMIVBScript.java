@@ -158,8 +158,11 @@ class WMIVBScript implements WMIStub {
 
     @Override
     public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
+        List<String> usedWMIProperties;
         if (wmiProperties == null || wmiProperties.isEmpty()) {
-            wmiProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);
+            usedWMIProperties = WMI4Java.get().VBSEngine().computerName(computerName).namespace(namespace).listProperties(wmiClass);
+        } else {
+            usedWMIProperties = wmiProperties;
         }
         try {
             StringBuilder scriptCode = new StringBuilder(200);
@@ -181,7 +184,7 @@ class WMIVBScript implements WMIStub {
             }
             scriptCode.append("\")").append(CRLF);
             scriptCode.append("For Each element In wmiQueryData").append(CRLF);
-            for (final String wmiProperty : wmiProperties) {
+            for (final String wmiProperty : usedWMIProperties) {
                 scriptCode.append("Wscript.Echo \"").append(wmiProperty)
                         .append(": \" & ").append("element.").append(wmiProperty).append(CRLF);
             }

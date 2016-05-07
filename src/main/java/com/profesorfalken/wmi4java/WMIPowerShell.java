@@ -25,12 +25,13 @@ import java.util.List;
 
 /**
  * WMI Stub implementation based in PowerShell (jPowerShell)
- * 
+ *
  * @author Javier Garcia Alonso
  */
 class WMIPowerShell implements WMIStub {
+
     private static final String NAMESPACE_PARAM = "-Namespace ";
-    private static final String GETWMIOBJECT_COMMAND = "Get-WMIObject ";    
+    private static final String GETWMIOBJECT_COMMAND = "Get-WMIObject ";
 
     private static String executeCommand(String command) throws WMIException {
         String commandResponse = null;
@@ -110,16 +111,19 @@ class WMIPowerShell implements WMIStub {
         if (!"*".equals(namespace)) {
             command += NAMESPACE_PARAM + namespace;
         }
-        if(wmiProperties == null ||wmiProperties.isEmpty()){
-            wmiProperties = Collections.singletonList("*");
+        List<String> usedWMIProperties;
+        if (wmiProperties == null || wmiProperties.isEmpty()) {
+            usedWMIProperties = Collections.singletonList("*");
+        } else {
+            usedWMIProperties = wmiProperties;
         }
 
         command += " | ";
 
-        command += "Select-Object " + Joiner.on(", ").join(wmiProperties)+" -excludeproperty \"_*\" | ";
+        command += "Select-Object " + Joiner.on(", ").join(usedWMIProperties) + " -excludeproperty \"_*\" | ";
 
-        if(conditions!=null && !conditions.isEmpty()){
-            for(String condition : conditions) {
+        if (conditions != null && !conditions.isEmpty()) {
+            for (String condition : conditions) {
                 command += "Where-Object -FilterScript {" + condition + "} | ";
             }
         }
