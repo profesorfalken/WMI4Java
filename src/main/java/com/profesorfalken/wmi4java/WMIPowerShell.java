@@ -59,7 +59,6 @@ class WMIPowerShell implements WMIStub {
         return commandResponse;
     }
 
-    @Override
     public String listClasses(String namespace, String computerName) throws WMIException {
         String namespaceString = "";
         if (!"*".equals(namespace)) {
@@ -70,7 +69,6 @@ class WMIPowerShell implements WMIStub {
                 + namespaceString + " -List | Sort Name");
     }
 
-    @Override
     public String listProperties(String wmiClass, String namespace, String computerName) throws WMIException {
         String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
@@ -87,7 +85,6 @@ class WMIPowerShell implements WMIStub {
         return executeCommand(command);
     }
 
-    @Override
     public String listObject(String wmiClass, String namespace, String computerName) throws WMIException {
         String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
@@ -104,7 +101,6 @@ class WMIPowerShell implements WMIStub {
         return executeCommand(command);
     }
 
-    @Override
     public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
         String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 

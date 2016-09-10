@@ -98,7 +98,6 @@ class WMIVBScript implements WMIStub {
         return scriptResponse.trim();
     }
 
-    @Override
     public String listClasses(String namespace, String computerName) throws WMIException {
 
         try {
@@ -126,7 +125,6 @@ class WMIVBScript implements WMIStub {
         }
     }
 
-    @Override
     public String listProperties(String wmiClass, String namespace, String computerName) throws WMIException {
         try {
             StringBuilder scriptCode = new StringBuilder(200);
@@ -151,12 +149,10 @@ class WMIVBScript implements WMIStub {
         }
     }
 
-    @Override
     public String listObject(String wmiClass, String namespace, String computerName) throws WMIException {
         return queryObject(wmiClass, null, null, namespace, computerName);
     }
 
-    @Override
     public String queryObject(String wmiClass, List<String> wmiProperties, List<String> conditions, String namespace, String computerName) throws WMIException {
         List<String> usedWMIProperties;
         if (wmiProperties == null || wmiProperties.isEmpty()) {
