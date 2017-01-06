@@ -55,7 +55,7 @@ https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.4.2/WMI4Java-1.4.2.
 ```java
     //Example get processes named java.exe
     Map<String, String> wmiObjectProperties = 
-        WMI4Java.get().filter(Arrays.asList("$_.Name -eq \"java.exe\"")).getWMIObject("Win32_Process");
+        WMI4Java.get().filters(Arrays.asList("$_.Name -eq \"java.exe\"")).getWMIObject("Win32_Process");
 ```
 
 #### Get only specific properties ####
