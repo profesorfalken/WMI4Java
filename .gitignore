@@ -2,3 +2,5 @@
 /TestBugPowerShell/nbproject/private/
 /.project
 /.classpath
+.idea/
+*.iml
