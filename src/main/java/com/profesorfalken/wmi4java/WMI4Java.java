@@ -15,14 +15,7 @@
  */
 package com.profesorfalken.wmi4java;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -229,7 +222,7 @@ public class WMI4Java {
      * @return map with the key and the value of all the properties of the
      * object
      */
-    public Map<String, String> getWMIObject(WMIClass wmiClass) {
+    public List<Map<String, String>> getWMIObject(WMIClass wmiClass) {
         return getWMIObject(wmiClass.getName());
     }
 
@@ -240,30 +233,34 @@ public class WMI4Java {
      * @return map with the key and the value of all the properties of the
      * object
      */
-    public Map<String, String> getWMIObject(String wmiClass) {
-        Map<String, String> foundWMIClassProperties = new HashMap<String, String>();
+    public List<Map<String, String>> getWMIObject(String wmiClass) {
+        List<Map<String, String>> foundWMIClassProperties = new LinkedList<Map<String, String>>();
         try {
             String rawData;
             if (this.properties != null || this.filters != null) {
-                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
+                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters,
                         this.namespace, this.computerName);
             } else {
                 rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
-            }            
+            }
 
-            String[] dataStringLines = rawData.split(NEWLINE_REGEX);
-
-            for (final String line : dataStringLines) {
-                if (!line.isEmpty()) {
-                    String[] entry = line.split(":");
-                    if (entry != null && entry.length == 2) {
-                        foundWMIClassProperties.put(entry[0].trim(), entry[1].trim());
+            String[] dataStringObjects = rawData.split(NEWLINE_REGEX + NEWLINE_REGEX);
+            for (String dataStringObject : dataStringObjects) {
+                String[] dataStringLines = dataStringObject.split(NEWLINE_REGEX);
+                Map<String, String> objectProperties = new HashMap<String, String>();
+                for (final String line : dataStringLines) {
+                    if (!line.isEmpty()) {
+                        String[] entry = line.split(":");
+                        if (entry.length == 2) {
+                            objectProperties.put(entry[0].trim(), entry[1].trim());
+                        }
                     }
                 }
+                foundWMIClassProperties.add(objectProperties);
             }
         } catch (WMIException ex) {
             Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            foundWMIClassProperties = Collections.emptyMap();
+            foundWMIClassProperties = Collections.emptyList();
         }
         return foundWMIClassProperties;
     }
@@ -288,7 +285,7 @@ public class WMI4Java {
         String rawData;
         try {
             if (this.properties != null || this.filters != null) {
-                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
+                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters,
                         this.namespace, this.computerName);
             } else {
                 rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);

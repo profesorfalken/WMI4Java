@@ -163,7 +163,7 @@ public class MainGetInfo {
                 long initTime = System.currentTimeMillis();
                 System.out.println("==========Class " + wmiClass + " ==============");
 
-                Map<String, String> wmiObjectProperties = wmi4java.VBSEngine().VBSEngine().getWMIObject(wmiClass);
+                Map<String, String> wmiObjectProperties = wmi4java.VBSEngine().VBSEngine().getWMIObject(wmiClass).get(0);
 
                 Set<Map.Entry<String, String>> properties = wmiObjectProperties.entrySet();
                 for (Map.Entry<String, String> property : properties) {

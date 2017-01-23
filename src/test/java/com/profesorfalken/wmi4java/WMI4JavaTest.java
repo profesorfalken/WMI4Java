@@ -153,7 +153,7 @@ public class WMI4JavaTest {
         if (OSDetector.isWindows()) {
             WMI4Java wmi4java = WMI4Java.get();
 
-            Map<String, String> wmiObjectProperties = wmi4java.getWMIObject("Win32_BaseBoard");
+            Map<String, String> wmiObjectProperties = wmi4java.getWMIObject("Win32_BaseBoard").get(0);
 
             assertTrue("Returned WMI object list is empty! ",
                     !wmiObjectProperties.isEmpty());
@@ -162,7 +162,7 @@ public class WMI4JavaTest {
             assertNotNull("Manufacturer property should not be null ",
                     wmiObjectProperties.get("Manufacturer"));
 
-            Map<String, String> wmiObjectPropertiesVB = wmi4java.VBSEngine().getWMIObject("Win32_BaseBoard");
+            Map<String, String> wmiObjectPropertiesVB = wmi4java.VBSEngine().getWMIObject("Win32_BaseBoard").get(0);
 
             assertTrue("Returned WMI object list is empty! ",
                     !wmiObjectPropertiesVB.isEmpty());
