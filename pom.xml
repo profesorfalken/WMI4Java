@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.profesorfalken</groupId>
     <artifactId>WMI4Java</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3-SNAPSHOT</version>
     <packaging>jar</packaging>
-    
-    
+
+
     <name>WMI4Java</name>
     <description>API to query WMI from Java</description>
     <url>https://github.com/profesorfalken/WMI4Java</url>
@@ -18,7 +18,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <developers>
         <developer>
             <name>Javier Garcia Alonso</name>
@@ -27,11 +27,11 @@
             <organizationUrl>http://www.profesorfalken.com</organizationUrl>
         </developer>
     </developers>
-    
+
     <scm>
         <url>https://github.com/profesorfalken/WMI4Java.git</url>
     </scm>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -42,7 +42,7 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-    
+
     <profiles>
         <profile>
             <id>release-profile</id>
@@ -107,7 +107,7 @@
             </build>
         </profile>
     </profiles>
-    
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -128,8 +128,8 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.5</maven.compiler.source>
-        <maven.compiler.target>1.5</maven.compiler.target>
-        <sonar.java.source>1.5</sonar.java.source>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <sonar.java.source>1.6</sonar.java.source>
     </properties>
 </project>
