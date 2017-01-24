@@ -219,8 +219,7 @@ public class WMI4Java {
      * Query all the object data for an specific class
      *
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
-     * @return map with the key and the value of all the properties of the
-     * object
+     * @return list of maps, each with key/value pairs for all object properties
      */
     public List<Map<String, String>> getWMIObject(WMIClass wmiClass) {
         return getWMIObject(wmiClass.getName());
@@ -230,8 +229,7 @@ public class WMI4Java {
      * Query all the object data for an specific class
      *
      * @param wmiClass string with the name of the class to query
-     * @return map with the key and the value of all the properties of the
-     * object
+     * @return list of maps, each with key/value pairs for all object properties
      */
     public List<Map<String, String>> getWMIObject(String wmiClass) {
         List<Map<String, String>> foundWMIClassProperties = new LinkedList<Map<String, String>>();
