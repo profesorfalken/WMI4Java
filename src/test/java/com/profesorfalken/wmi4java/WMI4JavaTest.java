@@ -214,11 +214,11 @@ public class WMI4JavaTest {
             String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
 
             //Compare first and last line ignoring spaces
-            assertTrue("PS and VBS query result are different!", CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[0])
-                    .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[0])));
+            assertTrue("PS and VBS query result are different!", (queryResultPSLines[0].replaceAll("\\s+",""))
+                    .equals(queryResultVBSLines[0].replaceAll("\\s+","")));
             assertTrue("PS and VBS query result are different!",
-                    CharMatcher.WHITESPACE.removeFrom(queryResultPSLines[queryResultPSLines.length - 1])
-                    .equals(CharMatcher.WHITESPACE.removeFrom(queryResultVBSLines[queryResultVBSLines.length - 1])));
+                    (queryResultPSLines[queryResultPSLines.length - 1].replaceAll("\\s+",""))
+                    .equals(queryResultVBSLines[queryResultVBSLines.length - 1].replaceAll("\\s+","")));
         }
     }
 }
