@@ -176,7 +176,7 @@ class WMIVBScript implements WMIStub {
             scriptCode.append("Set wmiQueryData = objWMIService.ExecQuery(\"Select ").append("*").append(" from ")
                     .append(wmiClass);
             if (conditions != null && !conditions.isEmpty()) {
-                scriptCode.append(" where ").append(Joiner.on(" AND ").join(conditions));
+                scriptCode.append(" where ").append(WMI4JavaUtil.join(" AND ", conditions));
             }
             scriptCode.append("\")").append(CRLF);
             scriptCode.append("For Each element In wmiQueryData").append(CRLF);

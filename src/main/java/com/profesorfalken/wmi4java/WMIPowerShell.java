@@ -116,7 +116,7 @@ class WMIPowerShell implements WMIStub {
 
         command += " | ";
 
-        command += "Select-Object " + Joiner.on(", ").join(usedWMIProperties) + " -excludeproperty \"_*\" | ";
+        command += "Select-Object " + WMI4JavaUtil.join(", ", usedWMIProperties) + " -excludeproperty \"_*\" | ";
 
         if (conditions != null && !conditions.isEmpty()) {
             for (String condition : conditions) {
