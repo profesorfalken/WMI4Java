@@ -223,7 +223,13 @@ public class WMI4Java {
     }
 
     /**
-     * Query all the object data for an specific class
+     * Query all the object data for an specific class <br>
+     * 
+     * <b>WARNINGN</b> Notice that this method return a flat object. That means that 
+     * if you need to retrieve a list of objects it will not work as expected. Every time 
+     * it find an existing object key it overrides it. <p>
+     * 
+     * In order to retrieve a list of objects, use instead {@link #getWMIObjectList(WMIClass)}
      *
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return map with the key and the value of all the properties of the
@@ -234,9 +240,15 @@ public class WMI4Java {
     }
 
     /**
-     * Query all the object data for an specific class
+     * Query all the object data for an specific class <br>
+     * 
+     * <b>WARNINGN</b> Notice that this method return a flat object. That means that 
+     * if you need to retrieve a list of objects it will not work as expected. Every time 
+     * it find an existing object key it overrides it. <p>
+     * 
+     * In order to retrieve a list of objects, use instead {@link #getWMIObjectList(String)}
      *
-     * @param wmiClass string with the name of the class to query
+     * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return map with the key and the value of all the properties of the
      * object
      */
@@ -264,6 +276,64 @@ public class WMI4Java {
         } catch (WMIException ex) {
             Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
             foundWMIClassProperties = Collections.emptyMap();
+        }
+        return foundWMIClassProperties;
+    }
+    
+    /**
+     * Query a list of object data for an specific class <br>
+     * 
+     * This method should be used to retrieve a list of objects instead of a flat key/value
+     * object. <br>
+     * For example, you can use it to retrieve hardware elements information (processors, printers, 
+     * screens, etc) 
+     *
+     * @param wmiClass Enum that contains the most used classes (root/cimv2)
+     * @return List of key/value elements. Each element in the list is a found object
+     */
+    public List<Map<String, String>> getWMIObjectList(WMIClass wmiClass) {
+        return getWMIObjectList(wmiClass.getName());
+    }
+    
+    /**
+     * Query a list of object data for an specific class <br>
+     * 
+     * This method should be used to retrieve a list of objects instead of a flat key/value
+     * object. <br>
+     * For example, you can use it to retrieve hardware elements information (processors, printers, 
+     * screens, etc) 
+     *
+     * @param wmiClass Enum that contains the most used classes (root/cimv2)
+     * @return List of key/value elements. Each element in the list is a found object
+     */
+    public List<Map<String, String>> getWMIObjectList(String wmiClass) {
+        List<Map<String, String>> foundWMIClassProperties = new ArrayList<Map<String, String>>();
+        try {
+            String rawData;
+            if (this.properties != null || this.filters != null) {
+                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters,
+                        this.namespace, this.computerName);
+            } else {
+                rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
+            }
+
+            String[] dataStringObjects = rawData.split(NEWLINE_REGEX + NEWLINE_REGEX);
+            for (String dataStringObject : dataStringObjects) {
+                String[] dataStringLines = dataStringObject.split(NEWLINE_REGEX);
+                Map<String, String> objectProperties = new HashMap<String, String>();
+                for (final String line : dataStringLines) {
+                    if (!line.isEmpty()) {
+                        String[] entry = line.split(":");
+                        if (entry.length == 2) {
+                            objectProperties.put(entry[0].trim(), entry[1].trim());
+                        }
+                    }
+                }
+                foundWMIClassProperties.add(objectProperties);
+            }
+        } catch (WMIException ex) {
+            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
+            foundWMIClassProperties = Collections.emptyList();
         }
         return foundWMIClassProperties;
     }
