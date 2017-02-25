@@ -5,18 +5,22 @@
  */
 package com.profesorfalken.wmi4java;
 
-import com.google.common.base.CharMatcher;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.*;
+
 
 /**
  * Test for WMI4Java

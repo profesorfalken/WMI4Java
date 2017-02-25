@@ -15,13 +15,12 @@
  */
 package com.profesorfalken.wmi4java;
 
-import com.google.common.base.Joiner;
+import java.util.Collections;
+import java.util.List;
+
 import com.profesorfalken.jpowershell.PowerShell;
 import com.profesorfalken.jpowershell.PowerShellNotAvailableException;
 import com.profesorfalken.jpowershell.PowerShellResponse;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * WMI Stub implementation based in PowerShell (jPowerShell)
