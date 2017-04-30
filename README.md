@@ -7,18 +7,18 @@ Java API to perform WMI queries
 
 ## Installation ##
 
-To install WMI4Java you can add the dependecy to your software project management tool: http://mvnrepository.com/artifact/com.profesorfalken/WMI4Java/1.4.2
+To install WMI4Java you can add the dependecy to your software project management tool: http://mvnrepository.com/artifact/com.profesorfalken/WMI4Java/1.5
 
 For example, for Maven you have just to add to your pom.xml: 
 
       <dependency>
 	        <groupId>com.profesorfalken</groupId>
 	        <artifactId>WMI4Java</artifactId>
-	        <version>1.4.2</version>
+	        <version>1.5</version>
         </dependency>
 
 Instead, you can direct download the JAR file and add it to your classpath. 
-https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.4.2/WMI4Java-1.4.2.jar
+https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.5/WMI4Java-1.5.jar
 
 ## Basic Usage ##
 
@@ -39,6 +39,17 @@ https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.4.2/WMI4Java-1.4.2.
 ```java
     //Example win32_BIOS
     Map<String, String> wmiObjectProperties = WMI4Java.get().getWMIObject("Win32_BIOS");
+```
+
+
+#### Get a list of WMI Objects ####
+
+When you need to retrieve a list of WMI objects (processors, printers, etc), the flat getWMIObject method is not adequate. 
+In this case you should use the method getWMIObjectList instead.
+
+```java
+    //Example Win32_PRINTER
+    List<Map<String, String>> wmiObjectListProperties = WMI4Java.get().getWMIObject("Win32_PRINTER");
 ```
 
 ## More Advanced Usage ##
