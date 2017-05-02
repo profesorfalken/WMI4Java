@@ -126,10 +126,10 @@ class WMIPowerShell implements WMIStub {
     	String command = GETWMIOBJECT_COMMAND + wmiClass + " ";
 
         if (!"*".equals(namespace)) {
-            command += NAMESPACE_PARAM + namespace;
+            command += NAMESPACE_PARAM + namespace + " ";
         }
         if (!computerName.isEmpty()) {
-            command += COMPUTERNAME_PARAM + computerName;
+            command += COMPUTERNAME_PARAM + computerName + " ";
         }
         
         return command;
