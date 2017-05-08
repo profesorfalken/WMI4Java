@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -191,34 +193,38 @@ public class WMI4JavaTest {
         System.out.println("testQueryWMIObject");
 
         if (OSDetector.isWindows()) {
-            String queryResultPS = WMI4Java.get().PowerShellEngine()
-                    .filters(Arrays.asList("$_.Name -eq \"svchost.exe\""))
-                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
-                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
-            assertNotNull("Query result should not be null!", queryResultPS);
-            assertTrue("Query result should not be empty! ",
-                    !queryResultPS.isEmpty());
-
-            String queryResultVBS = WMI4Java.get().VBSEngine()
-                    .filters(Arrays.asList("Name = 'svchost.exe'"))
-                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
-                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
-            assertNotNull("Query result should not be null!", queryResultVBS);
-            assertTrue("Query result should not be empty! ",
-                    !queryResultVBS.isEmpty());
-
-            System.out.println(queryResultPS);
-            System.out.println(queryResultVBS);
-
-            String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
-            String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
-
-            //Compare first and last line ignoring spaces
-            assertTrue("PS and VBS query result are different!", (queryResultPSLines[0].replaceAll("\\s+",""))
-                    .equals(queryResultVBSLines[0].replaceAll("\\s+","")));
-            /*assertTrue("PS and VBS query result are different!",
-                    (queryResultPSLines[queryResultPSLines.length - 1].replaceAll("\\s+",""))
-                    .equals(queryResultVBSLines[queryResultVBSLines.length - 1].replaceAll("\\s+","")));*/
+            try {
+                String queryResultPS = WMI4Java.get().PowerShellEngine()
+                        .filters(Arrays.asList("$_.Name -eq \"svchost.exe\""))
+                        .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                        .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
+                assertNotNull("Query result should not be null!", queryResultPS);
+                assertTrue("Query result should not be empty! ",
+                        !queryResultPS.isEmpty());
+                
+                String queryResultVBS = WMI4Java.get().VBSEngine()
+                        .filters(Arrays.asList("Name = 'svchost.exe'"))
+                        .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                        .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
+                assertNotNull("Query result should not be null!", queryResultVBS);
+                assertTrue("Query result should not be empty! ",
+                        !queryResultVBS.isEmpty());
+                
+                System.out.println(queryResultPS);
+                System.out.println(queryResultVBS);
+                
+                String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
+                String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
+                
+                //Compare first and last line ignoring spaces
+                assertTrue("PS and VBS query result are different!", (queryResultPSLines[0].replaceAll("\\s+",""))
+                        .equals(queryResultVBSLines[0].replaceAll("\\s+","")));
+                /*assertTrue("PS and VBS query result are different!",
+                (queryResultPSLines[queryResultPSLines.length - 1].replaceAll("\\s+",""))
+                .equals(queryResultVBSLines[queryResultVBSLines.length - 1].replaceAll("\\s+","")));*/
+            } catch (WMIException ex) {
+                Logger.getLogger(WMI4JavaTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

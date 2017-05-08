@@ -1,9 +1,13 @@
 package com.profesorfalken.wmi4java;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -144,7 +148,12 @@ public class MainGetInfo {
                 "testGetAllInfo");
         WMI4Java wmi4java = WMI4Java.get().VBSEngine();
 
-        List<String> wmiClassesList = wmi4java.VBSEngine().listClasses();
+        List<String> wmiClassesList = new ArrayList<String>();
+        try {
+            wmiClassesList = wmi4java.VBSEngine().listClasses();
+        } catch (WMIException ex) {
+            Logger.getLogger(MainGetInfo.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //Filter classes that provoques hangs
         wmiClassesList.removeAll(classesToFilter);
@@ -163,7 +172,12 @@ public class MainGetInfo {
                 long initTime = System.currentTimeMillis();
                 System.out.println("==========Class " + wmiClass + " ==============");
 
-                Map<String, String> wmiObjectProperties = wmi4java.VBSEngine().VBSEngine().getWMIObject(wmiClass);
+                Map<String, String> wmiObjectProperties = new HashMap<String, String>();
+                try {
+                    wmiObjectProperties = wmi4java.VBSEngine().VBSEngine().getWMIObject(wmiClass);
+                } catch (WMIException ex) {
+                    Logger.getLogger(MainGetInfo.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 Set<Map.Entry<String, String>> properties = wmiObjectProperties.entrySet();
                 for (Map.Entry<String, String> property : properties) {
