@@ -162,32 +162,28 @@ public class WMI4Java {
      * <a href="https://msdn.microsoft.com/fr-fr/library/windows/desktop/aa394554(v=vs.85).aspx">WMI
      * Classes - MSDN</a>
      * @return a list with the name of existing classes in the system
+     * @throws WMIException
      */
-    public List<String> listClasses() {
+    public List<String> listClasses() throws WMIException {
         List<String> wmiClasses = new ArrayList<String>();
         String rawData;
-        try {
-            rawData = getWMIStub().listClasses(this.namespace, this.computerName);
+        
+        rawData = getWMIStub().listClasses(this.namespace, this.computerName);
 
-            String[] dataStringLines = rawData.split(NEWLINE_REGEX);
+        String[] dataStringLines = rawData.split(NEWLINE_REGEX);
 
-            for (String line : dataStringLines) {
-                if (!line.isEmpty() && !line.startsWith("_")) {
-                    String[] infos = line.split(SPACE_REGEX);
-                    wmiClasses.addAll(Arrays.asList(infos));
-                }
+        for (String line : dataStringLines) {
+            if (!line.isEmpty() && !line.startsWith("_")) {
+                String[] infos = line.split(SPACE_REGEX);
+                wmiClasses.addAll(Arrays.asList(infos));
             }
-
-            //Normalize results: remove duplicates and sort the list
-            Set<String> hs = new HashSet<String>();
-            hs.addAll(wmiClasses);
-            wmiClasses.clear();
-            wmiClasses.addAll(hs);
-
-        } catch (Exception ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            wmiClasses = Collections.emptyList();
         }
+
+        //Normalize results: remove duplicates and sort the list
+        Set<String> hs = new HashSet<String>();
+        hs.addAll(wmiClasses);
+        wmiClasses.clear();
+        wmiClasses.addAll(hs);
 
         return wmiClasses;
     }
@@ -197,35 +193,32 @@ public class WMI4Java {
      *
      * @param wmiClass the WMI class to query
      * @return a list with the name of existing properties in the class
+     * @throws WMIException
      */
-    public List<String> listProperties(String wmiClass) {
+    public List<String> listProperties(String wmiClass) throws WMIException {
         List<String> foundPropertiesList = new ArrayList<String>();
-        try {
-            String rawData = getWMIStub().listProperties(wmiClass, this.namespace, this.computerName);
+        
+        String rawData = getWMIStub().listProperties(wmiClass, this.namespace, this.computerName);
 
-            String[] dataStringLines = rawData.split(NEWLINE_REGEX);
+        String[] dataStringLines = rawData.split(NEWLINE_REGEX);
 
-            for (final String line : dataStringLines) {
-                if (!line.isEmpty()) {
-                    foundPropertiesList.add(line.trim());
-                }
+        for (final String line : dataStringLines) {
+            if (!line.isEmpty()) {
+                foundPropertiesList.add(line.trim());
             }
-
-            List<String> notAllowed
-                    = Arrays.asList(new String[]{"Equals", "GetHashCode", "GetType", "ToString"});
-            foundPropertiesList.removeAll(notAllowed);
-
-        } catch (Exception ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            foundPropertiesList = Collections.emptyList();
         }
+
+        List<String> notAllowed
+                = Arrays.asList(new String[]{"Equals", "GetHashCode", "GetType", "ToString"});
+        foundPropertiesList.removeAll(notAllowed);
+
         return foundPropertiesList;
     }
 
     /**
      * Query all the object data for an specific class <br>
      * 
-     * <b>WARNINGN</b> Notice that this method return a flat object. That means that 
+     * <b>WARNING</b> Notice that this method return a flat object. That means that 
      * if you need to retrieve a list of objects it will not work as expected. Every time 
      * it find an existing object key it overrides it. <p>
      * 
@@ -234,8 +227,9 @@ public class WMI4Java {
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return map with the key and the value of all the properties of the
      * object
+     * @throws WMIException
      */
-    public Map<String, String> getWMIObject(WMIClass wmiClass) {
+    public Map<String, String> getWMIObject(WMIClass wmiClass) throws WMIException {
         return getWMIObject(wmiClass.getName());
     }
 
@@ -251,32 +245,30 @@ public class WMI4Java {
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return map with the key and the value of all the properties of the
      * object
+     * @throws WMIException
      */
-    public Map<String, String> getWMIObject(String wmiClass) {
+    public Map<String, String> getWMIObject(String wmiClass) throws WMIException {
         Map<String, String> foundWMIClassProperties = new HashMap<String, String>();
-        try {
-            String rawData;
-            if (this.properties != null || this.filters != null) {
-                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
-                        this.namespace, this.computerName);
-            } else {
-                rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
-            }            
+        
+        String rawData;
+        if (this.properties != null || this.filters != null) {
+            rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
+                    this.namespace, this.computerName);
+        } else {
+            rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
+        }            
 
-            String[] dataStringLines = rawData.split(NEWLINE_REGEX);
+        String[] dataStringLines = rawData.split(NEWLINE_REGEX);
 
-            for (final String line : dataStringLines) {
-                if (!line.isEmpty()) {
-                    String[] entry = line.split(":");
-                    if (entry != null && entry.length == 2) {
-                        foundWMIClassProperties.put(entry[0].trim(), entry[1].trim());
-                    }
+        for (final String line : dataStringLines) {
+            if (!line.isEmpty()) {
+                String[] entry = line.split(":");
+                if (entry != null && entry.length == 2) {
+                    foundWMIClassProperties.put(entry[0].trim(), entry[1].trim());
                 }
             }
-        } catch (WMIException ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            foundWMIClassProperties = Collections.emptyMap();
         }
+
         return foundWMIClassProperties;
     }
     
@@ -290,8 +282,9 @@ public class WMI4Java {
      *
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return List of key/value elements. Each element in the list is a found object
+     * @throws WMIException
      */
-    public List<Map<String, String>> getWMIObjectList(WMIClass wmiClass) {
+    public List<Map<String, String>> getWMIObjectList(WMIClass wmiClass) throws WMIException {
         return getWMIObjectList(wmiClass.getName());
     }
     
@@ -305,36 +298,34 @@ public class WMI4Java {
      *
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return List of key/value elements. Each element in the list is a found object
+     * @throws WMIException
      */
-    public List<Map<String, String>> getWMIObjectList(String wmiClass) {
+    public List<Map<String, String>> getWMIObjectList(String wmiClass) throws WMIException {
         List<Map<String, String>> foundWMIClassProperties = new ArrayList<Map<String, String>>();
-        try {
-            String rawData;
-            if (this.properties != null || this.filters != null) {
-                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters,
-                        this.namespace, this.computerName);
-            } else {
-                rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
-            }
+        
+        String rawData;
+        if (this.properties != null || this.filters != null) {
+            rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters,
+                    this.namespace, this.computerName);
+        } else {
+            rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
+        }
 
-            String[] dataStringObjects = rawData.split(NEWLINE_REGEX + NEWLINE_REGEX);
-            for (String dataStringObject : dataStringObjects) {
-                String[] dataStringLines = dataStringObject.split(NEWLINE_REGEX);
-                Map<String, String> objectProperties = new HashMap<String, String>();
-                for (final String line : dataStringLines) {
-                    if (!line.isEmpty()) {
-                        String[] entry = line.split(":");
-                        if (entry.length == 2) {
-                            objectProperties.put(entry[0].trim(), entry[1].trim());
-                        }
+        String[] dataStringObjects = rawData.split(NEWLINE_REGEX + NEWLINE_REGEX);
+        for (String dataStringObject : dataStringObjects) {
+            String[] dataStringLines = dataStringObject.split(NEWLINE_REGEX);
+            Map<String, String> objectProperties = new HashMap<String, String>();
+            for (final String line : dataStringLines) {
+                if (!line.isEmpty()) {
+                    String[] entry = line.split(":");
+                    if (entry.length == 2) {
+                        objectProperties.put(entry[0].trim(), entry[1].trim());
                     }
                 }
-                foundWMIClassProperties.add(objectProperties);
             }
-        } catch (WMIException ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            foundWMIClassProperties = Collections.emptyList();
+            foundWMIClassProperties.add(objectProperties);
         }
+
         return foundWMIClassProperties;
     }
 
@@ -343,8 +334,9 @@ public class WMI4Java {
      *
      * @param wmiClass Enum that contains the most used classes (root/cimv2)
      * @return string with all the properties of the object
+     * @throws WMIException
      */
-    public String getRawWMIObjectOutput(WMIClass wmiClass) {
+    public String getRawWMIObjectOutput(WMIClass wmiClass) throws WMIException {
         return getRawWMIObjectOutput(wmiClass.getName());
     }
 
@@ -353,20 +345,18 @@ public class WMI4Java {
      *
      * @param wmiClass string with the name of the class to query
      * @return string with all the properties of the object
+     * @throws WMIException
      */
-    public String getRawWMIObjectOutput(String wmiClass) {
+    public String getRawWMIObjectOutput(String wmiClass) throws WMIException {
         String rawData;
-        try {
-            if (this.properties != null || this.filters != null) {
-                rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
-                        this.namespace, this.computerName);
-            } else {
-                rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
-            }
-        } catch (WMIException ex) {
-            Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, GENERIC_ERROR_MSG, ex);
-            rawData = "";
+        
+        if (this.properties != null || this.filters != null) {
+            rawData = getWMIStub().queryObject(wmiClass, this.properties, this.filters, 
+                    this.namespace, this.computerName);
+        } else {
+            rawData = getWMIStub().listObject(wmiClass, this.namespace, this.computerName);
         }
+        
         return rawData;
     }
 }

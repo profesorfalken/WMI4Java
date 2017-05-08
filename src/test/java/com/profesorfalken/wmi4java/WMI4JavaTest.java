@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -109,40 +111,44 @@ public class WMI4JavaTest {
      * Test of listProperties method, of class WMI4Java.
      */
     @Test
-    public void testWMIClassPropertiesList() throws Exception {
+    public void testWMIClassPropertiesList() {
         System.out.println("test testWMIClassPropertiesList");
 
         if (OSDetector.isWindows()) {
-            WMI4Java wmi4java = WMI4Java.get();
-
-            List<String> wmiClassPropertiesList = wmi4java.listProperties("Win32_BaseBoard");
-
-            assertTrue("Returned WMI class properties list is empty! ",
-                    !wmiClassPropertiesList.isEmpty());
-            assertTrue("WMI class properties list content not valid! ",
-                    wmiClassPropertiesList.contains("Version"));
-            assertTrue("WMI class properties list content not valid! Not correctly filtered ",
-                    !wmiClassPropertiesList.contains("__CLASS"));
-
-            List<String> wmiClassPropertiesRootNamespaceList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
-            assertTrue("Returned WMI class properties list should be empty! ",
-                    wmiClassPropertiesRootNamespaceList.isEmpty());
-
-            //Now test with VB
-            List<String> wmiClassPropertiesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listProperties("Win32_BaseBoard");
-            assertTrue("Returned WMI class properties list is empty! ",
-                    !wmiClassPropertiesVBList.isEmpty());
-            assertTrue("WMI class properties list content not valid! ",
-                    wmiClassPropertiesVBList.contains("Version"));
-            assertTrue("WMI class properties list content not valid! Not correctly filtered ",
-                    !wmiClassPropertiesVBList.contains("__CLASS"));
-
-            List<String> wmiClassPropertiesRootNamespaceVBList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
-            assertTrue("Returned WMI class properties list should be empty! ",
-                    wmiClassPropertiesRootNamespaceVBList.isEmpty());
-
-            //Calculate differences
-            //assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassPropertiesList, wmiClassPropertiesVBList));
+            try {
+                WMI4Java wmi4java = WMI4Java.get();
+                
+                List<String> wmiClassPropertiesList = wmi4java.listProperties("Win32_BaseBoard");
+                
+                assertTrue("Returned WMI class properties list is empty! ",
+                        !wmiClassPropertiesList.isEmpty());
+                assertTrue("WMI class properties list content not valid! ",
+                        wmiClassPropertiesList.contains("Version"));
+                assertTrue("WMI class properties list content not valid! Not correctly filtered ",
+                        !wmiClassPropertiesList.contains("__CLASS"));
+                
+                List<String> wmiClassPropertiesRootNamespaceList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+                assertTrue("Returned WMI class properties list should be empty! ",
+                        wmiClassPropertiesRootNamespaceList.isEmpty());
+                
+                //Now test with VB
+                List<String> wmiClassPropertiesVBList = wmi4java.VBSEngine().namespace("root/cimv2").listProperties("Win32_BaseBoard");
+                assertTrue("Returned WMI class properties list is empty! ",
+                        !wmiClassPropertiesVBList.isEmpty());
+                assertTrue("WMI class properties list content not valid! ",
+                        wmiClassPropertiesVBList.contains("Version"));
+                assertTrue("WMI class properties list content not valid! Not correctly filtered ",
+                        !wmiClassPropertiesVBList.contains("__CLASS"));
+                
+                List<String> wmiClassPropertiesRootNamespaceVBList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+                assertTrue("Returned WMI class properties list should be empty! ",
+                        wmiClassPropertiesRootNamespaceVBList.isEmpty());
+                
+                //Calculate differences
+                //assertFalse("PowerShell result differs from VBS! ", areDifferent(wmiClassPropertiesList, wmiClassPropertiesVBList));
+            } catch (WMIException ex) {
+                Logger.getLogger(WMI4JavaTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         System.out.println("end testWMIClassPropertiesList");
     }
@@ -151,7 +157,7 @@ public class WMI4JavaTest {
      * Test of getWMIObject method, of class WMI4Java.
      */
     @Test
-    public void testWMIObject() throws Exception {
+    public void testWMIObject() throws WMIException {
         System.out.println("testWMIObject");
 
         if (OSDetector.isWindows()) {
@@ -191,34 +197,38 @@ public class WMI4JavaTest {
         System.out.println("testQueryWMIObject");
 
         if (OSDetector.isWindows()) {
-            String queryResultPS = WMI4Java.get().PowerShellEngine()
-                    .filters(Arrays.asList("$_.Name -eq \"svchost.exe\""))
-                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
-                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
-            assertNotNull("Query result should not be null!", queryResultPS);
-            assertTrue("Query result should not be empty! ",
-                    !queryResultPS.isEmpty());
-
-            String queryResultVBS = WMI4Java.get().VBSEngine()
-                    .filters(Arrays.asList("Name = 'svchost.exe'"))
-                    .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
-                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
-            assertNotNull("Query result should not be null!", queryResultVBS);
-            assertTrue("Query result should not be empty! ",
-                    !queryResultVBS.isEmpty());
-
-            System.out.println(queryResultPS);
-            System.out.println(queryResultVBS);
-
-            String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
-            String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
-
-            //Compare first and last line ignoring spaces
-            assertTrue("PS and VBS query result are different!", (queryResultPSLines[0].replaceAll("\\s+",""))
-                    .equals(queryResultVBSLines[0].replaceAll("\\s+","")));
-            /*assertTrue("PS and VBS query result are different!",
-                    (queryResultPSLines[queryResultPSLines.length - 1].replaceAll("\\s+",""))
-                    .equals(queryResultVBSLines[queryResultVBSLines.length - 1].replaceAll("\\s+","")));*/
+            try {
+                String queryResultPS = WMI4Java.get().PowerShellEngine()
+                        .filters(Arrays.asList("$_.Name -eq \"svchost.exe\""))
+                        .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                        .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
+                assertNotNull("Query result should not be null!", queryResultPS);
+                assertTrue("Query result should not be empty! ",
+                        !queryResultPS.isEmpty());
+                
+                String queryResultVBS = WMI4Java.get().VBSEngine()
+                        .filters(Arrays.asList("Name = 'svchost.exe'"))
+                        .properties(Arrays.asList("Name", "CommandLine", "ProcessId"))
+                        .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
+                assertNotNull("Query result should not be null!", queryResultVBS);
+                assertTrue("Query result should not be empty! ",
+                        !queryResultVBS.isEmpty());
+                
+                System.out.println(queryResultPS);
+                System.out.println(queryResultVBS);
+                
+                String[] queryResultPSLines = queryResultPS.split("\\r?\\n");
+                String[] queryResultVBSLines = queryResultVBS.split("\\r?\\n");
+                
+                //Compare first and last line ignoring spaces
+                assertTrue("PS and VBS query result are different!", (queryResultPSLines[0].replaceAll("\\s+",""))
+                        .equals(queryResultVBSLines[0].replaceAll("\\s+","")));
+                /*assertTrue("PS and VBS query result are different!",
+                (queryResultPSLines[queryResultPSLines.length - 1].replaceAll("\\s+",""))
+                .equals(queryResultVBSLines[queryResultVBSLines.length - 1].replaceAll("\\s+","")));*/
+            } catch (WMIException ex) {
+                Logger.getLogger(WMI4JavaTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
