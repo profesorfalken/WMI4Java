@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +125,12 @@ public class WMI4JavaTest {
             assertTrue("WMI class properties list content not valid! Not correctly filtered ",
                     !wmiClassPropertiesList.contains("__CLASS"));
 
-            List<String> wmiClassPropertiesRootNamespaceList = wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+            List<String> wmiClassPropertiesRootNamespaceList = Collections.emptyList();
+            try {
+            	wmi4java.namespace("root/WMI").listProperties("Win32_BaseBoard");
+            } catch (WMIException wmie) {
+            	//Error
+            }
             assertTrue("Returned WMI class properties list should be empty! ",
                     wmiClassPropertiesRootNamespaceList.isEmpty());
 

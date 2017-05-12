@@ -16,18 +16,28 @@
 package com.profesorfalken.wmi4java;
 
 /**
- * Custom exception for WMI4Java
+ * Custom exception for WMI4Java.<p>
+ * 
+ * This is an unchecked exception so it can be catched optionally
  *  
  * @author Javier Garcia Alonso
  */
-public class WMIException extends Exception{
+public class WMIException extends RuntimeException{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5992635300188042890L;
 
-    public WMIException(String message) {
+	public WMIException(String message) {
         super(message);
     }
 
     public WMIException(String message, Throwable cause) {
         super(message, cause);
+    }
+    
+    public WMIException(Throwable cause) {
+        super(cause);
     }
     
 }
