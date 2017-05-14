@@ -37,6 +37,9 @@ import java.util.logging.Logger;
  * <p>
  * The default computername will be . and the default namespace root/cimv2
  * <p>
+ * 
+ * All method will return an unchecked exception of type {@link WMIException} that can 
+ * be optionally handled (thanks to <b>guilhermeoc97</b> for proposing an exception mechanism).<p>
  *
  * It supports two implementations: <br>
  * -One based on PowerShell console (see project jPowerShell)<br>
