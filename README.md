@@ -14,11 +14,11 @@ For example, for Maven you have just to add to your pom.xml:
       <dependency>
 	        <groupId>com.profesorfalken</groupId>
 	        <artifactId>WMI4Java</artifactId>
-	        <version>1.6.2</version>
+	        <version>1.6.3</version>
         </dependency>
 
 Instead, you can direct download the JAR file and add it to your classpath. 
-https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.6.2/WMI4Java-1.6.2.jar
+https://repo1.maven.org/maven2/com/profesorfalken/WMI4Java/1.6.3/WMI4Java-1.6.3.jar
 
 ## Basic Usage ##
 
