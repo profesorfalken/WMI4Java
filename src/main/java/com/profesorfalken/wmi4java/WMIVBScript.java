@@ -51,9 +51,9 @@ class WMIVBScript implements WMIStub {
             writer.close();
 
             Process process = Runtime.getRuntime().exec(
-                    new String[]{"cmd.exe", "/C", "cscript.exe", "/NoLogo", tmpFile.getAbsolutePath()});
+                    new String[]{"cmd.exe", "/C", "cscript.exe", "/U", "/NoLogo", tmpFile.getAbsolutePath()});
             BufferedReader processOutput
-                    = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-16LE"));
             String line;
             while ((line = processOutput.readLine()) != null) {
                 if (!line.isEmpty()) {
@@ -63,7 +63,7 @@ class WMIVBScript implements WMIStub {
 
             if (scriptResponse.isEmpty()) {
                 errorOutput
-                        = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-16LE"));
                 String errorResponse = "";
                 while ((line = errorOutput.readLine()) != null) {
                     if (!line.isEmpty()) {
