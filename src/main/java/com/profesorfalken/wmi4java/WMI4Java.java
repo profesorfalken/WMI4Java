@@ -281,8 +281,10 @@ public class WMI4Java {
 
 			for (final String line : dataStringLines) {
 				if (!line.isEmpty()) {
-					String[] entry = line.split(":");
-					if (entry != null && entry.length == 2) {
+					// Limit to 2 split entries as WMI property names may not contain colons
+					// See: https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-classes#naming-conventions-for-wmi-classes-and-properties
+					String[] entry = line.split(":", 2);
+					if (entry.length == 2) {
 						foundWMIClassProperties.put(entry[0].trim(), entry[1].trim());
 					}
 				}
@@ -341,7 +343,9 @@ public class WMI4Java {
 				Map<String, String> objectProperties = new HashMap<String, String>();
 				for (final String line : dataStringLines) {
 					if (!line.isEmpty()) {
-						String[] entry = line.split(":");
+						// Limit to 2 split entries as WMI property names may not contain colons
+						// See: https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-classes#naming-conventions-for-wmi-classes-and-properties
+						String[] entry = line.split(":", 2);
 						if (entry.length == 2) {
 							objectProperties.put(entry[0].trim(), entry[1].trim());
 						}
