@@ -42,6 +42,7 @@ class WMIVBScript implements WMIStub {
         File tmpFile = null;
         FileWriter writer = null;
         BufferedReader errorOutput = null;
+        Process process = null;
 
         try {
             tmpFile = File.createTempFile("wmi4java" + new Date().getTime(), ".vbs");
@@ -50,7 +51,7 @@ class WMIVBScript implements WMIStub {
             writer.flush();
             writer.close();
 
-            Process process = Runtime.getRuntime().exec(
+            process = Runtime.getRuntime().exec(
                     new String[]{"cmd.exe", "/C", "cscript.exe", "/NoLogo", tmpFile.getAbsolutePath()});
             BufferedReader processOutput
                     = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -88,6 +89,11 @@ class WMIVBScript implements WMIStub {
                 }
                 if (errorOutput != null) {
                     errorOutput.close();
+                }
+                if (process != null) {
+                    process.getInputStream().close();
+                    process.getOutputStream().close();
+                    process.getErrorStream().close();
                 }
             } catch (IOException ioe) {
                 Logger.getLogger(WMI4Java.class.getName()).log(Level.SEVERE, "Exception closing in finally", ioe);
