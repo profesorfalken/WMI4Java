@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.profesorfalken</groupId>
+    <groupId>net.synedra</groupId>
     <artifactId>WMI4Java</artifactId>
-    <version>1.6.3</version>
+    <version>1.6.4</version>
     <packaging>jar</packaging>
     
     
     <name>WMI4Java</name>
     <description>API to query WMI from Java</description>
-    <url>https://github.com/profesorfalken/WMI4Java</url>
+    <url>https://github.com/effad/WMI4Java</url>
 
     <licenses>
         <license>
@@ -26,10 +26,18 @@
             <organization>ProfesorFalken</organization>
             <organizationUrl>http://www.profesorfalken.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Robert Lichtenberger</name>
+            <email>r.lichtenberger@synedra.com</email>
+            <organization>synedra</organization>
+            <organizationUrl>http://www.synedra.com</organizationUrl>
+        </developer>
+		
     </developers>
     
     <scm>
-        <url>https://github.com/profesorfalken/WMI4Java.git</url>
+		<developerConnection>scm:git:file:///home/rli/PWEs/WMI4Java</developerConnection>
+		<url>https://github.com/effad/WMI4Java.git</url>
     </scm>
     
     <distributionManagement>
@@ -56,10 +64,39 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
-                    <plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<source>8</source>
+						</configuration>						
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.5</version>
@@ -123,8 +160,8 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.5</maven.compiler.source>
-        <maven.compiler.target>1.5</maven.compiler.target>
-        <sonar.java.source>1.5</sonar.java.source>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <sonar.java.source>1.8</sonar.java.source> 
     </properties>
 </project>
