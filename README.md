@@ -49,7 +49,7 @@ In this case you should use the method getWMIObjectList instead.
 
 ```java
     //Example Win32_PRINTER
-    List<Map<String, String>> wmiObjectListProperties = WMI4Java.get().getWMIObject("Win32_PRINTER");
+    List<Map<String, String>> wmiObjectListProperties = WMI4Java.get().getWMIObjectList("Win32_PRINTER");
 ```
 
 ## More Advanced Usage ##
